@@ -1,6 +1,4 @@
 const Todo = (todoTitle, desc, notes, dueDate, priority = 0) => {
-  const id = crypto.randomUUID();
-
   const todo = {
     todoTitle,
     desc,
@@ -8,9 +6,7 @@ const Todo = (todoTitle, desc, notes, dueDate, priority = 0) => {
     notes,
     type: 'todo',
     priority,
-    getTodoId: function () {
-      return id;
-    },
+    id: crypto.randomUUID(),
   };
 
   return todo;

@@ -14,13 +14,6 @@ const popModal = () => {
         e.stopPropagation();
         this.closeModal();
       });
-      this.submitInputs.addEventListener('click', (e) => {
-        this.divInputsModal.querySelectorAll('input').forEach((input) => {
-          input.value = '';
-        });
-        e.stopPropagation();
-        this.closeModal();
-      });
       return this;
     },
     openModal: function () {
@@ -31,9 +24,13 @@ const popModal = () => {
       this.projectInputContainer.focus();
     },
     closeModal: function () {
+      this.submitInputs.removeEventListener('click', this.submitInputs.onclick);
       this.divInputsModal.classList.add('hidden');
       this.divOverlay.classList.remove('fixed');
       this.divOverlay.classList.add('hidden');
+      this.divInputsModal.querySelectorAll('.projectInput').forEach((input) => {
+        input.removeAttribute('selected'), input.classList.add('hidden');
+      });
       this.projectInputContainer.blur();
     },
   };

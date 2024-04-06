@@ -1,61 +1,65 @@
 const handleStorage = () => {
+  if (!localStorage.getItem('Projects')) {
+    localStorage.setItem('Projects', JSON.stringify([]));
+  }
+
   const handleStorage = {
     getProject: function (id) {
-      return JSON.parse(localStorage.getItem(id));
+      const projects = JSON.parse(localStorage.getItem('Projects'));
+      return projects.find((project) => project.id === id);
     },
     getAllProjects: function () {
-      const projects = [];
-      for (const key in localStorage) {
-        if (typeof localStorage[key] === 'string') {
-          projects.push(JSON.parse(localStorage[key]));
-        }
-      }
-      return projects;
+      return JSON.parse(localStorage.getItem('Projects'));
     },
-    setProject: function (id, project) {
-      return localStorage.setItem(id, JSON.stringify(project));
+    setProject: function (project) {
+      const projects = JSON.parse(localStorage.getItem('Projects'));
+      projects.push(project);
+      localStorage.setItem('Projects', JSON.stringify(projects));
     },
     deleteProject: function (projectId) {
-      return localStorage.removeItem(projectId);
+      const projects = JSON.parse(localStorage.getItem('Projects'));
+      const updatedProjects = projects.filter(
+        (project) => project.id !== projectId
+      );
+      localStorage.setItem('Projects', JSON.stringify(updatedProjects));
     },
     getTodos: function (projectId) {
       const project = this.getProject(projectId);
-      const todos = project.todos;
-      if (todos.length <= 0) {
-        return `You haven't got anything to do`;
-      } else {
-        return todos;
-      }
+      return project && project.todos && project.todos.length > 0
+        ? project.todos
+        : `You haven't got anything to do`;
     },
     getTodo: function (projectId, todoId) {
       const project = this.getProject(projectId);
-      if (project && Array.isArray(project.todos)) {
-        return project.todos.find((todo) => todo.id === todoId);
-      } else {
-        return null;
-      }
+      return project && Array.isArray(project.todos)
+        ? project.todos.find((todo) => todo.id === todoId)
+        : null;
     },
     setTodo: function (projectId, todo) {
       const project = this.getProject(projectId);
       if (project && Array.isArray(project.todos)) {
         project.todos.push(todo);
-        localStorage.setItem(projectId, JSON.stringify(project));
-      } else {
-        return null;
+        this.updateProjectInLocalStorage(project);
       }
     },
     deleteTodo: function (projectId, todoId) {
       const project = this.getProject(projectId);
       if (project && Array.isArray(project.todos)) {
-        const todoIndex = project.todos.findIndex((todo) => todo.id === todoId);
-        if (todoIndex !== -1) {
-          project.todos.splice(todoIndex, 1);
-          localStorage.setItem(projectId, JSON.stringify(project));
-        }
+        project.todos = project.todos.filter((todo) => todo.id !== todoId);
+        this.updateProjectInLocalStorage(project);
+      }
+    },
+    updateProjectInLocalStorage: function (project) {
+      const projects = JSON.parse(localStorage.getItem('Projects'));
+      const index = projects.findIndex((p) => p.id === project.id);
+      if (index !== -1) {
+        projects[index] = project;
+        localStorage.setItem('Projects', JSON.stringify(projects));
       }
     },
   };
 
   return handleStorage;
 };
+
 export default handleStorage;

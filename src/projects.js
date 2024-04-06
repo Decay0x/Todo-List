@@ -4,9 +4,7 @@ const Project = (projectTitle, todos = []) => {
     projectTitle,
     todos,
     type: 'project',
-    getProjectId: function () {
-      return id;
-    },
+    id: crypto.randomUUID(),
   };
 
   return project;
