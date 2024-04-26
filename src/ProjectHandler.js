@@ -1,8 +1,11 @@
+import HandleStorage from './HandleStorage';
 import Project from './projects';
-import Todo from './todo';
 import TodoHandler from './TodoHandler';
 
 export default function ProjectHandler(modal, storage) {
+  let activeProject;
+  // importing from the TodoHandler
+  const todoHandler = TodoHandler(modal, storage);
   const projectHandler = {
     handleProjectSubmit: () => {
       const projectInput = document.querySelector('.projectInput');
@@ -13,19 +16,22 @@ export default function ProjectHandler(modal, storage) {
         projectInput.setAttribute('placeholder', `Project without a name!?`);
       }
       if (project) {
+        HandleStorage();
         storage.setProject(project);
-        if (projectInput.hasAttribute('placeholder')) {
-          projectInput.removeAttribute('placeholder');
-        }
+
         projectInput.value = '';
         projectHandler.displayProjects();
         modal.closeModal();
+        projectInput.setAttribute('placeholder', 'Project Name');
+        activeProject = project;
       }
     },
     handleProject: (project) => {
-      // importing from the TodoHandler
-      const todoHandler = TodoHandler(modal, storage);
-      todoHandler.displayTodos(project.id);
+      todoHandler.displayTodos(project);
+      activeProject = project;
+    },
+    setActiveProject: () => {
+      todoHandler.getActiveProject(activeProject);
     },
     deleteProject: (id) => {
       storage.deleteProject(id);
@@ -50,6 +56,7 @@ export default function ProjectHandler(modal, storage) {
 
         span.addEventListener('click', () => {
           projectHandler.handleProject(project);
+          projectHandler.setActiveProject(project);
         });
         x.addEventListener('click', () => {
           projectHandler.deleteProject(project.id);

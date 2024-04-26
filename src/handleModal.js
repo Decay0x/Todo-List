@@ -1,10 +1,10 @@
 const popModal = () => {
-  const modal = {
-    projectInputContainer: document.getElementById('projectInputContainer'),
-    divInputsModal: document.getElementById('inputsModal'),
+  const projectModal = {
+    inputsContainer: document.getElementById('projectInputsContainer'),
+    divInputsModal: document.getElementById('projectInputsModal'),
     divOverlay: document.getElementById('overlay'),
-    closeBtn: document.getElementById('closeModal'),
-    submitInputs: document.getElementById('submitInputs'),
+    closeBtn: document.getElementById('projectCloseModal'),
+    submitInputs: document.getElementById('projectSubmitInputs'),
     init: function () {
       this.closeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -21,20 +21,50 @@ const popModal = () => {
       this.divInputsModal.classList.add('fixed');
       this.divOverlay.classList.remove('hidden');
       this.divOverlay.classList.add('fixed');
-      this.projectInputContainer.focus();
+      this.inputsContainer.focus();
     },
     closeModal: function () {
       this.submitInputs.removeEventListener('click', this.submitInputs.onclick);
       this.divInputsModal.classList.add('hidden');
       this.divOverlay.classList.remove('fixed');
       this.divOverlay.classList.add('hidden');
-      this.divInputsModal.querySelectorAll('.projectInput').forEach((input) => {
-        input.removeAttribute('selected'), input.classList.add('hidden');
-      });
-      this.projectInputContainer.blur();
+      this.inputsContainer.blur();
     },
   };
-
-  return modal.init();
+  const todoModal = {
+    inputsContainer: document.getElementById('todoInputsContainer'),
+    divInputsModal: document.getElementById('todoInputsModal'),
+    divOverlay: document.getElementById('overlay'),
+    closeBtn: document.getElementById('todoCloseModal'),
+    submitInputs: document.getElementById('todoSubmitInputs'),
+    init: function () {
+      this.closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.closeModal();
+      });
+      this.divOverlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.closeModal();
+      });
+      return this;
+    },
+    openModal: function () {
+      this.divInputsModal.classList.remove('hidden');
+      this.divInputsModal.classList.add('fixed');
+      this.divOverlay.classList.remove('hidden');
+      this.divOverlay.classList.add('fixed');
+      this.inputsContainer.focus();
+    },
+    closeModal: function () {
+      this.submitInputs.removeEventListener('click', this.submitInputs.onclick);
+      this.divInputsModal.classList.add('hidden');
+      this.divOverlay.classList.remove('fixed');
+      this.divOverlay.classList.add('hidden');
+      this.inputsContainer.blur();
+    },
+  };
+  projectModal.init();
+  todoModal.init();
+  return { projectModal, todoModal };
 };
 export default popModal;

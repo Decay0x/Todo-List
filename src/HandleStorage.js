@@ -1,4 +1,5 @@
-const handleStorage = () => {
+export default function HandleStorage() {
+  // establish Projects within localStorage
   if (!localStorage.getItem('Projects')) {
     localStorage.setItem('Projects', JSON.stringify([]));
   }
@@ -60,6 +61,4 @@ const handleStorage = () => {
   };
 
   return handleStorage;
-};
-
-export default handleStorage;
+}

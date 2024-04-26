@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Todo - List</title>
   </head>
+  <div
+    id="overlay"
+    class="hidden w-screen h-screen inset-0 backdrop-blur-sm bg-transparent z-10"
+  ></div>
   <body class="bg-[#333] grid grid-cols-6 grid-rows-8 h-screen">
-    <div
-      id="overlay"
-      class="hidden w-screen h-screen inset-0 backdrop-blur-sm bg-transparent"
-    ></div>
     <header
       class="grid-item col-span-full row-span-1 bg-sky-800 shadow-sm shadow-white"
     >
@@ -44,15 +44,15 @@
       <div id="tasksContainer" class="flex-1 flex flex-col gap-2 p-2"></div>
 
       <div
-        id="inputsModal"
+        id="projectInputsModal"
         class="hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 min-w-96 min-h-72 p-6 shadow-md shadow-white rounded-md"
       >
         <div
           class="w-full h-full flex flex-col items-center justify-center gap-4 my-20"
-          id="projectInputContainer"
+          id="projectInputsContainer"
         >
           <button
-            id="closeModal"
+            id="projectCloseModal"
             class="absolute top-0 right-0 px-2 text-red-600 bg-white rounded-sm"
           >
             Close
@@ -60,11 +60,70 @@
           <input
             class="projectInput py-2 px-4 rounded-md focus:outline-none hidden"
             type="text"
+            placeholder="Project Name"
           />
           <button
-            id="submitInputs"
+            id="projectSubmitInputs"
             class="hover:cursor-pointer border rounded-md px-2 py-2 bg-opacity-5 hover:bg-sky-800 hover:bg-opacity-100 text-white"
-          ></button>
+          >
+            Create Project
+          </button>
+        </div>
+      </div>
+      <div
+        id="todoInputsModal"
+        class="hidden top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 min-w-96 min-h-72 p-6 shadow-md shadow-white rounded-md"
+      >
+        <div
+          class="w-full h-full flex flex-col items-center justify-center gap-4 my-20"
+          id="todoInputsContainer"
+        >
+          <button
+            id="todoCloseModal"
+            class="absolute top-0 right-0 px-2 text-red-600 bg-white rounded-sm"
+          >
+            Close
+          </button>
+          <input
+            id="todoTitle"
+            class="todoInput py-2 px-4 rounded-md focus:outline-none"
+            type="text"
+            placeholder="Todo Title"
+          />
+          <input
+            id="todoDesc"
+            class="todoInput py-2 px-4 rounded-md focus:outline-none"
+            type="text"
+            placeholder="Todo Description"
+          />
+          <input
+            id="todoNotes"
+            class="todoInput py-2 px-4 rounded-md focus:outline-none"
+            type="text"
+            placeholder="Todo Notes"
+          />
+          <select
+            class="rounded-md py-2 px-4 bg-white outline-none min-w-[283px]"
+            name="todoPriority"
+            id="todoPriority"
+          >
+            <option value="1">Low</option>
+            <option value="2">Medium</option>
+            <option value="3">High</option>
+          </select>
+          <input
+            id="todoDueDate"
+            class="todoInput py-2 px-4 rounded-md focus:outline-none min-w-[283px]"
+            type="date"
+            placeholder="Due Date"
+          />
+
+          <button
+            id="todoSubmitInputs"
+            class="hover:cursor-pointer border rounded-md px-2 py-2 bg-opacity-5 hover:bg-sky-800 hover:bg-opacity-100 text-white"
+          >
+            Add Todo
+          </button>
         </div>
       </div>
     </main>
