@@ -2,8 +2,10 @@ import HandleStorage from './HandleStorage';
 import ProjectHandler from './ProjectHandler';
 import Project from './projects';
 import Todo from './todo';
+import { format } from 'date-fns';
 
 export default function TodoHandler(modal, storage) {
+  let todoActiveProject;
   const todoHandler = {
     displayTodos: (project) => {
       const todosArr = storage.getTodos(project.id);
@@ -25,29 +27,53 @@ export default function TodoHandler(modal, storage) {
                 ? (span.className = '')
                 : (span.className = 'hidden');
             });
-            todoHandler.handleTodoSubmit(project);
           });
         });
       }
     },
-    handleTodoSubmit: (project) => {
-      // storage.setTodo(project.id, todo);
+    handleTodoSubmit: (project, todo) => {
+      todoHandler.setTodoActiveProject(project);
+      storage.setTodo(project.id, todo);
+      // TODO UPDATE THE UI
+      todoHandler.displayTodos(project);
+      modal.closeModal();
     },
-    getActiveProject: (activeProject) => {
+    setTodoActiveProject: (activeProject) => {
       if (activeProject === undefined) {
         if (HandleStorage().getAllProjects().length <= 0) {
           HandleStorage();
         }
         alert(`Create or select a project first`);
       } else {
-        null;
+        todoActiveProject = activeProject;
       }
     },
-    createTodoInputs: () => {
-      /* TODO: layout the todo requirements 'user inputs' */
-      const inputsModal = document.getElementById('todoInputsModal');
-
-      return inputsModal;
+    storeTodoInputs: () => {
+      /* gathering all the user input and makes them a todo obj */
+      const inputsContainer = document.getElementById('todoInputsContainer');
+      const inputs = inputsContainer.querySelectorAll('input');
+      const select = inputsContainer.querySelector('select');
+      let date;
+      if (inputs[3].value === '') {
+        date = 'No due date ';
+      } else {
+        date = format(new Date(inputs[3].value), 'dd/MM/yyyy');
+      }
+      // const date = new Date(inputs[3].value);
+      // const formattedDate = format(date, 'dd/MM/yyyy');
+      const userInputObj = Todo(
+        inputs[0].value,
+        inputs[1].value,
+        inputs[2].value,
+        date,
+        select.value
+      );
+      inputs[0].value = '';
+      inputs[1].value = '';
+      inputs[2].value = '';
+      inputs[3].value = '';
+      select.value = 1;
+      return userInputObj;
     },
     todoDecor: (todo) => {
       /* creates/displays the todo details in the main section */
@@ -65,7 +91,7 @@ export default function TodoHandler(modal, storage) {
       todoNotes.textContent = `Notes: ${todo.notes}`;
       todoDueDate.textContent = `Due Date: ${todo.dueDate}`;
       todoPriority.textContent = `Priority: ${
-        todo.priority === 1 ? 'Low' : todo.priority === 2 ? 'Medium' : 'High'
+        todo.priority == 1 ? 'Low' : todo.priority == 2 ? 'Medium' : 'High'
       }
 `;
       todoTitle.className = 'hidden';
@@ -75,13 +101,17 @@ export default function TodoHandler(modal, storage) {
       todoPriority.className = 'hidden';
       div.className =
         'relative border-2 text-white p-2 flex cursor-pointer gap-2 justify-between flex-col';
-      if (todo.priority === 1) {
+      if (todo.priority == 1) {
         div.classList.add('bg-green-500');
-      } else if (todo.priority === 2) {
+      } else if (todo.priority == 2) {
         div.classList.add('bg-amber-500');
       } else {
         div.classList.add('bg-red-500');
       }
+      deleteTodoBtn.addEventListener('click', () => {
+        HandleStorage().deleteTodo(todoActiveProject.id, todo.id);
+        todoHandler.displayTodos(todoActiveProject);
+      });
       div.textContent = `${todo.todoTitle}`;
       div.appendChild(deleteTodoBtn);
       div.append(todoTitle, todoDesc, todoNotes, todoDueDate, todoPriority);

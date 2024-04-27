@@ -25,6 +25,9 @@ export default function HandleStorage() {
       localStorage.setItem('Projects', JSON.stringify(updatedProjects));
     },
     getTodos: function (projectId) {
+      if (projectId === undefined) {
+        return 'Create or select a project';
+      }
       const project = this.getProject(projectId);
       return project && project.todos && project.todos.length > 0
         ? project.todos

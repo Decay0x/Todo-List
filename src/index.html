@@ -9,15 +9,19 @@
     id="overlay"
     class="hidden w-screen h-screen inset-0 backdrop-blur-sm bg-transparent z-10"
   ></div>
-  <body class="bg-[#333] grid grid-cols-6 grid-rows-8 h-screen">
+  <body
+    class="bg-[#333] flex flex-col lg:grid lg:grid-cols-6 lg:grid-rows-8 h-screen"
+  >
     <header
-      class="grid-item col-span-full row-span-1 bg-sky-800 shadow-sm shadow-white"
+      class="flex-1 flex items-center justify-center lg:grid-item lg:col-span-full lg:row-span-1 bg-sky-800 shadow-sm shadow-white"
     >
       <h1 class="text-center text-[2rem] text-white">
         Keep track of your tasks
       </h1>
     </header>
-    <aside class="grid-item col-span-1 row-span-7 shadow-md shadow-sky-800">
+    <aside
+      class="flex-1 lg:grid-item lg:col-span-1 lg:row-span-7 shadow-md shadow-sky-800"
+    >
       <div class="flex flex-col gap-2 h-full">
         <div class="flex items-center justify-center gap-2 p-2">
           <h5 class="text-white text-lg">Projects</h5>
@@ -28,13 +32,13 @@
         ></div>
         <button
           id="addProject"
-          class="hover:cursor-pointer text-white text-sm border-2 border-green-400 rounded-full m-2 py-1 hover:bg-green-700"
+          class="self-center max-w-32 hover:cursor-pointer text-white text-sm border-2 border-green-400 rounded-full m-2 py-1 px-2 hover:bg-green-700"
         >
           Add project <span class="text-green-400">+</span>
         </button>
       </div>
     </aside>
-    <main class="grid-item col-span-5 row-span-6 flex flex-col">
+    <main class="flex-1 lg:grid-item lg:col-span-5 lg:row-span-6 flex flex-col">
       <button
         id="addTodo"
         class="font-bold text-white border-2 rounded-full w-[30px] h-[30px] self-end m-2 hover:text-[#333] hover:bg-white"
@@ -128,7 +132,7 @@
       </div>
     </main>
     <footer
-      class="grid-item col-span-full row-span-1 col-start-2 h-auto flex flex-col items-end justify-end"
+      class="flex-1 lg:grid-item lg:col-span-full lg:row-span-1 lg:col-start-2 h-auto flex flex-col items-end justify-end"
     >
       <div class="flex items-center gap-1 text-sm text-white px-4 py-1">
         Designed by
