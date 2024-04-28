@@ -1,6 +1,4 @@
 import HandleStorage from './HandleStorage';
-import ProjectHandler from './ProjectHandler';
-import Project from './projects';
 import Todo from './todo';
 import { format } from 'date-fns';
 
@@ -53,39 +51,43 @@ export default function TodoHandler(modal, storage) {
       const inputsContainer = document.getElementById('todoInputsContainer');
       const inputs = inputsContainer.querySelectorAll('input');
       const select = inputsContainer.querySelector('select');
+      const textArea = inputsContainer.querySelector('textarea');
       let date;
-      if (inputs[3].value === '') {
+      if (inputs[2].value === '') {
         date = 'No due date ';
       } else {
-        date = format(new Date(inputs[3].value), 'dd/MM/yyyy');
+        date = format(new Date(inputs[2].value), 'dd/MM/yyyy');
       }
-      // const date = new Date(inputs[3].value);
-      // const formattedDate = format(date, 'dd/MM/yyyy');
       const userInputObj = Todo(
         inputs[0].value,
         inputs[1].value,
-        inputs[2].value,
+        textArea.value,
         date,
         select.value
       );
       inputs[0].value = '';
       inputs[1].value = '';
+      textArea.value = '';
       inputs[2].value = '';
-      inputs[3].value = '';
       select.value = 1;
       return userInputObj;
     },
     todoDecor: (todo) => {
       /* creates/displays the todo details in the main section */
       const div = document.createElement('div');
+      const btnDiv = document.createElement('div');
       const deleteTodoBtn = document.createElement('button');
       const todoTitle = document.createElement('span');
       const todoDesc = document.createElement('span');
       const todoNotes = document.createElement('span');
       const todoDueDate = document.createElement('span');
       const todoPriority = document.createElement('span');
-      deleteTodoBtn.className = 'absolute top-0 right-2 text-red-800 font-bold';
+      const editTodoBtn = document.createElement('button');
+      btnDiv.className = 'flex items-baseline gap-2 absolute top-0 right-2';
+      deleteTodoBtn.className = 'text-red-800 font-bold';
+      editTodoBtn.className = 'text-sm';
       deleteTodoBtn.textContent = 'x';
+      editTodoBtn.textContent = 'edit';
       todoTitle.textContent = `Title: ${todo.todoTitle}`;
       todoDesc.textContent = `Description: ${todo.desc}`;
       todoNotes.textContent = `Notes: ${todo.notes}`;
@@ -100,7 +102,7 @@ export default function TodoHandler(modal, storage) {
       todoDueDate.className = 'hidden';
       todoPriority.className = 'hidden';
       div.className =
-        'relative border-2 text-white p-2 flex cursor-pointer gap-2 justify-between flex-col';
+        'relative break-words border-2 text-white p-2 flex cursor-pointer gap-2 justify-between flex-col';
       if (todo.priority == 1) {
         div.classList.add('bg-green-500');
       } else if (todo.priority == 2) {
@@ -108,12 +110,68 @@ export default function TodoHandler(modal, storage) {
       } else {
         div.classList.add('bg-red-500');
       }
-      deleteTodoBtn.addEventListener('click', () => {
+      deleteTodoBtn.addEventListener('click', (e) => {
+        // prevent the click to bubble
+        e.stopPropagation();
         HandleStorage().deleteTodo(todoActiveProject.id, todo.id);
         todoHandler.displayTodos(todoActiveProject);
       });
+      editTodoBtn.addEventListener('click', (e) => {
+        // prevent the click to bubble
+        e.stopPropagation();
+        modal.openModal();
+        // pre fill the previous user inputs to the modal
+        // Set the value of the date input field
+        // structure the date to a valid date input
+        let [day, month, year] = todo.dueDate.split('/');
+        // Reformat the date string to 'yyyy-MM-dd'
+        let formattedDateStr = `${year}-${month}-${day}`;
+        const inputsContainer = document.getElementById('todoInputsContainer');
+        const inputs = inputsContainer.querySelectorAll('input');
+        const select = inputsContainer.querySelector('select');
+        const textArea = inputsContainer.querySelector('textarea');
+        inputs[0].value = todo.todoTitle;
+        inputs[1].value = todo.desc;
+        textArea.value = todo.notes;
+        inputs[2].value = formattedDateStr;
+        select.value = todo.priority;
+
+        const updateTodo = () => {
+          const updatedTodo = todoHandler.storeTodoInputs();
+          storage.editTodo(todoActiveProject.id, todo.id, updatedTodo);
+          modal.closeModal();
+          // update the UI
+          todoHandler.displayTodos(todoActiveProject);
+          // reset the text of the todo button
+          clonedBtn.textContent = 'Add Todo';
+          clonedBtn.removeEventListener('click', updateTodo);
+        };
+        // Clone the button and modify the clone
+        const addTodoBtn = document.getElementById('todoSubmitInputs');
+        const clonedBtn = addTodoBtn.cloneNode(true);
+        clonedBtn.textContent = 'Update Todo';
+        clonedBtn.id = 'updateTodoBtn'; // Optionally change the ID to reflect the new purpose
+
+        // Replace the original button with the clone
+        addTodoBtn.replaceWith(clonedBtn);
+
+        // Now, add the event listener to the cloned button
+        clonedBtn.addEventListener('click', () => {
+          const updatedTodo = todoHandler.storeTodoInputs();
+          storage.editTodo(todoActiveProject.id, todo.id, updatedTodo);
+          modal.closeModal();
+          // update the UI
+          todoHandler.displayTodos(todoActiveProject);
+          // reset the text of the todo button
+          clonedBtn.textContent = 'Add Todo';
+          clonedBtn.id = 'todoSubmitInputs'; // Reset the ID if necessary
+          // Remove the event listener from the cloned button
+          clonedBtn.removeEventListener('click', updateTodo);
+        });
+      });
       div.textContent = `${todo.todoTitle}`;
-      div.appendChild(deleteTodoBtn);
+      btnDiv.append(editTodoBtn, deleteTodoBtn);
+      div.appendChild(btnDiv);
       div.append(todoTitle, todoDesc, todoNotes, todoDueDate, todoPriority);
       return div;
     },

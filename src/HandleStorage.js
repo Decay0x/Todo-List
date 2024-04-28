@@ -46,6 +46,20 @@ export default function HandleStorage() {
         this.updateProjectInLocalStorage(project);
       }
     },
+    editTodo: function (projectId, todoId, updatedTodo) {
+      const project = this.getProject(projectId);
+      if (project && Array.isArray(project.todos)) {
+        // Find the index of the todo to be updated
+        const todoIndex = project.todos.findIndex((todo) => todo.id === todoId);
+        if (todoIndex !== -1) {
+          // Update the todo at the found index with the updatedTodo object
+          project.todos[todoIndex] = updatedTodo;
+          // Save the updated project back to localStorage
+          this.updateProjectInLocalStorage(project);
+        }
+      }
+    },
+
     deleteTodo: function (projectId, todoId) {
       const project = this.getProject(projectId);
       if (project && Array.isArray(project.todos)) {

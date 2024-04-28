@@ -10,8 +10,8 @@ import Project from './projects';
 const storage = HandleStorage();
 const projectModal = popModal().projectModal;
 const todoModal = popModal().todoModal;
-const projectHandler = ProjectHandler(projectModal, storage);
 const todoHandler = TodoHandler(todoModal, storage);
+const projectHandler = ProjectHandler(projectModal, storage, todoHandler);
 const addProjectBtn = document.getElementById('addProject');
 const addTodoBtn = document.getElementById('addTodo');
 
@@ -22,7 +22,6 @@ window.addEventListener('load', () => {
     storage.setProject(general);
     projectHandler.displayProjects();
     projectHandler.handleProject(general);
-    console.log(projectHandler.getActiveProject());
   } else if (storage.getAllProjects().length == 1) {
     // visited before but haven't added your one project automatically set the default one as your active
     projectHandler.displayProjects();
@@ -64,8 +63,3 @@ const addTodo = () => {
 };
 addProjectBtn.addEventListener('click', addProject);
 addTodoBtn.addEventListener('click', addTodo);
-/* TODOs: }
-handle user inputs for adding todos. 
-handle the delete of todos.
-format dates.
-*/
